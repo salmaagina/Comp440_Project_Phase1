@@ -12,7 +12,9 @@
     <div class="container">
         <?php
                 if (isset($_POST["submit"])) {
-                    $fullName = $_POST["fullname"];
+                    $username = $_POST["username"];
+                    $fname = $_POST["fname"];
+                    $lname = $_POST["lname"];
                     $email = $_POST["email"];
                     $password = $_POST["password"];
                     $passwordConfirm = $_POST["confirm_password"];
@@ -20,7 +22,7 @@
 
                     $errors = array();
                     
-                    if (empty($fullName) OR empty($email) OR empty($password) OR empty($passwordConfirm)) {
+                    if (empty($username) OR empty ($fname) OR empty ($lname) OR empty($email) OR empty($password) OR empty($passwordConfirm)) {
                      array_push($errors,"All fields are required");
                     }
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -47,11 +49,11 @@
 
                     } else{
                      
-                     $sql = "INSERT INTO users (full_name, email, password) VALUES ( ?, ?, ? )";
+                     $sql = "INSERT INTO users (username, fname, lname, email, password) VALUES ( ?, ?, ?, ?, ?)";
                      $stmt = mysqli_stmt_init($conn);
                      $prepareStmt = mysqli_stmt_prepare($stmt,$sql);
                      if ($prepareStmt) {
-                         mysqli_stmt_bind_param($stmt,"sss",$fullName, $email, $passwordHash);
+                         mysqli_stmt_bind_param($stmt,"sssss",$username, $fname, $lname, $email, $passwordHash);
                          mysqli_stmt_execute($stmt);
                          echo "<div class='alert alert-success'>You are registered successfully.</div>";
                      } else{
@@ -64,7 +66,13 @@
         ?>
         <form action="registration.php" method="post">
             <div class="form-group">
-                <input type="text" class="form-control" name="fullname" placeholder="Full Name:">
+                <input type="text" class="form-control" name="username" placeholder="Username:">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="fname" placeholder="First Name:">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="lname" placeholder="Last Name:">
             </div>
             <div class="form-group">
                 <input type="emamil" class="form-control" name="email" placeholder="Email:">
