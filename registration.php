@@ -75,7 +75,7 @@
                 <input type="text" class="form-control" name="lname" placeholder="Last Name:">
             </div>
             <div class="form-group">
-                <input type="emamil" class="form-control" name="email" placeholder="Email:">
+                <input type="email" class="form-control" name="email" placeholder="Email:">
             </div>
             <div class="form-group">
                 <input type="password" class="form-control" name="password" placeholder="Password:">
