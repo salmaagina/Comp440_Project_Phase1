@@ -6,7 +6,7 @@ $dbPassword = "";
 $dbName = "phase1";
 $conn = mysqli_connect($hostName, $dbUser, $dbPassword, $dbName);
 if (!$conn) {
-    die("Something went wrong;");
+    die("Connection failed;");
 }
 
 ?>

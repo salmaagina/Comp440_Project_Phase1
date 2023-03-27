@@ -14,13 +14,13 @@
         if (isset($_POST["login"])) {
            $email = $_POST["email"];
            $password = $_POST["password"];
-            require_once "database.php";
+            require_once "database.php"; //connect first to the DB
             $sql = "SELECT * FROM users WHERE email = '$email'";
             $result = mysqli_query($conn, $sql);
-            $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
-            if ($user) {
-                if (password_verify($password, $user["password"])) {
-                    header("Location: index.php");
+            $user = mysqli_fetch_array($result, MYSQLI_ASSOC); //fetches the result row as an associative array
+            if ($user) { //if email or password doesn't exist in DB
+                if (password_verify($password, $user["password"])) { //to decript password since password is already incripted
+                    header("Location: index.php"); //redirect to the main page
                     die();
                 }else{
                     echo "<div class='alert alert-danger'>Password does not match</div>";

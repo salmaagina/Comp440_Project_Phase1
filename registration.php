@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <?php
-                if (isset($_POST["submit"])) {
+                if (isset($_POST["submit"])) { //the code inside the statement will work only if the user click "Register"
                     $username = $_POST["username"];
                     $fname = $_POST["fname"];
                     $lname = $_POST["lname"];
@@ -39,29 +39,27 @@
                     $sql = "SELECT * FROM users WHERE email = '$email'";
                     $result = mysqli_query($conn, $sql);
                     $rowCount = mysqli_num_rows($result);
-                    if ($rowCount>0) {
+                    if ($rowCount>0) { //if greater than 0 then provided email already exists!
                      array_push($errors,"Email already exists!");
                     }
                     if (count($errors)>0) {
                      foreach ($errors as  $error) {
-                         echo "<div class='alert alert-danger'>$error</div>";
+                         echo "<div class='alert alert-danger'>$error</div>"; //bootstrap alert in red
                      }
 
                     } else{
                      
-                     $sql = "INSERT INTO users (username, fname, lname, email, password) VALUES ( ?, ?, ?, ?, ?)";
-                     $stmt = mysqli_stmt_init($conn);
-                     $prepareStmt = mysqli_stmt_prepare($stmt,$sql);
-                     if ($prepareStmt) {
-                         mysqli_stmt_bind_param($stmt,"sssss",$username, $fname, $lname, $email, $passwordHash);
+                     $sql = "INSERT INTO users (username, fname, lname, email, password) VALUES ( ?, ?, ?, ?, ?)"; //users is name of the table. ? is used for insertion
+                     $stmt = mysqli_stmt_init($conn); //will initialize the statement and return object suitable for mysqli_stmt_prepare().
+                     $prepareStmt = mysqli_stmt_prepare($stmt,$sql); 
+                     if ($prepareStmt) { //if preparestmt is true then start adding (username, fname etc) in the sql
+                         mysqli_stmt_bind_param($stmt,"sssss",$username, $fname, $lname, $email, $passwordHash); // s is a shortcut for string 
                          mysqli_stmt_execute($stmt);
-                         echo "<div class='alert alert-success'>You are registered successfully.</div>";
+                         echo "<div class='alert alert-success'>You are registered successfully.</div>"; //bootsrap alert in green
                      } else{
-                         die("Something went wrong");
+                         die("Connection failed");
                      }
-                    }
-                                       
-         
+                    }                        
                  }
         ?>
         <form action="registration.php" method="post">
