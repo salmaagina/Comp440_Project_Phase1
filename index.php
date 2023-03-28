@@ -12,6 +12,9 @@
     <div class="container">
         <h1>Welcome to COMP 440</h1>
         <a href="logout.php" class="btn btn-warning">Logout</a>
+        <form method = "post" action = "initialize_database.php">
+            <button type = "submit" name = "initialize">Initialize Database</button>
+        </form>
     </div>
 </body>
 </html>
