@@ -1,1 +1,5 @@
-<h1>You have been logged out!</h1>
+<?php
+session_start();
+session_destroy();
+header("Location: login.php");
+?>
