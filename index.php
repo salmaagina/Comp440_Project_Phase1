@@ -15,6 +15,27 @@
         <form method = "post" action = "initialize_database.php">
             <button type = "submit" name = "initialize">Initialize Database</button>
         </form>
+        <br>
+        <form action="submit_item.php" method="POST">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title"><br>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea><br>
+
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category"><br>
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price"><br>
+
+            <button type="submit" value="Submit">Submit</button>
+        </form>
+        <form method="GET" action="search.php">
+            <label for="category">Search by category:</label>
+            <input type="text" id="category" name="category">
+            <input type="submit" value="Search">
+        </form>
     </div>
 </body>
 </html>
