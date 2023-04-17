@@ -20,9 +20,6 @@ if ($conn->query($sql) === TRUE) {
   echo "Error creating database: " . $conn->error;
 }
 
-// Connect to the database
-$conn = new mysqli($servername, $username, $password, $dbname);
-
 // Check if the products table already exists
 $table_exists = false;
 $result = $conn->query("SHOW TABLES LIKE 'products'");

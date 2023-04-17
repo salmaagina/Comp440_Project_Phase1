@@ -21,9 +21,10 @@ $result = $conn->query($sql);
 
 // Display search results in a table
 if ($result->num_rows > 0) {
-    echo "<table><tr><th>ID</th><th>Title</th><th>Description</th><th>Category</th><th>Price</th><th>Created At</th></tr>";
+    echo "<table><tr><th>ID</th><th>Title</th><th>Description</th><th>Category</th><th>Price</th><th>Created At</th><th>Review?</th></tr>";
     while ($row = $result->fetch_assoc()) {
-        echo "<tr><td>" . $row['id'] . "</td><td>" . $row['title'] . "</td><td>" . $row['description'] . "</td><td>" . $row['category'] . "</td><td>" . $row['price'] . "</td><td>" . $row['created_at'] . "</td></tr>";
+        // Create a button for each item and link it to a reviews page
+        echo "<tr><td>" . $row['id'] . "</td><td>" . $row['title'] . "</td><td>" . $row['description'] . "</td><td>" . $row['category'] . "</td><td>" . $row['price'] . "</td><td>" . $row['created_at'] . "</td><td><a href='reviews.php?id=" . $row['id'] . "'>Review</a></td></tr>";
     }
     echo "</table>";
 } else {
