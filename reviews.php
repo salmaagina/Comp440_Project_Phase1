@@ -1,3 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+    <div class="container">
+
 <form method="post" action="submit-review.php">
   <label for="item_id">Select an item:</label>
   <select name="item_id" id="item_id">
@@ -18,4 +31,5 @@
   <textarea name="description" id="description"></textarea>
   <br>
   <input type="submit" value="Submit Review">
+  <a href="index.php" class="btn btn-warning">return</a>
 </form>
