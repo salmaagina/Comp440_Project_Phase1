@@ -11,7 +11,7 @@
 <body>
     <div class="container">
 
-<form method="post" action="submit-review.php">
+<form method="post" action="submit_review.php">
   <label for="rating">Rating:</label>
   <select name="rating" id="rating">
     <option value="excellent">Excellent</option>
