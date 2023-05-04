@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +15,7 @@
     <div class="container">
     
 <?php
+
 // Connect to database
 $servername = "localhost";
 $username = "root";
@@ -37,7 +41,7 @@ if ($result->num_rows > 0) {
     echo "<table><tr><th>ID</th><th>Title</th><th>Description</th><th>Category</th><th>Price</th><th>Created At</th><th>Review?</th></tr>";
     while ($row = $result->fetch_assoc()) {
         // Create a button for each item and link it to a reviews page
-        echo "<tr><td>" . $row['id'] . "</td><td>" . $row['title'] . "</td><td>" . $row['description'] . "</td><td>" . $row['category'] . "</td><td>" . $row['price'] . "</td><td>" . $row['created_at'] . "</td><td><a href='reviews.php?id=" . $row['id'] . "'>Review</a></td></tr>";
+        echo "<tr><td>" . $row['id'] . "</td><td>" . $row['title'] . "</td><td>" . $row['description'] . "</td><td>" . $row['category'] . "</td><td>" . $row['price'] . "</td><td>" . $row['created_at'] . "</td><td><a href='review.php?id=" . $row['id'] . "'>Review</a></td></tr>";
     }
     echo "</table>";
 } else {

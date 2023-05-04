@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 $hostName = "localhost";
 $dbUser = "root";
 $dbPassword = "";

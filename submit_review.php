@@ -1,5 +1,8 @@
 <?php
-// Connect to database
+// Start session
+session_start();
+
+// Connect to Database
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -7,65 +10,86 @@ $dbname = "phase1";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Create database if it doesn't exist
-$sql = "CREATE DATABASE IF NOT EXISTS $dbname";
-if ($conn->query($sql) === TRUE) {
-  echo "Database created successfully<br>";
-} else {
-  echo "Error creating database: " . $conn->error;
-}
-
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "CREATE TABLE reviews(
-        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        item_id INT(6) UNSIGNED NOT NULL,
-        user_id INT(6) UNSIGNED NOT NULL,
-        rating VARCHAR(10) NOT NULL,
-        description TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )";
-if ($conn->query($sql) === FALSE) {
-    die("Error creating table: " . $conn->error);
+// Get item id from POST data
+$item_id = isset($_POST['id']) ? $_POST['id'] : null;
+
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+if (!$user_id || !ctype_digit(strval($user_id))) {
+    die("Error: Invalid user ID");
 }
 
-// Get item id and user id from POST data
-$item_id = $_POST['item_id'];
-$user_id = $_POST['user_id'];
+if (!$item_id || !ctype_digit(strval($item_id))) {
+    die("Error: Invalid item ID");
+}
+
+
+// Get review data from POST data
+$rating = isset($_POST['rating']) ? $_POST['rating'] : null;
+$description = isset($_POST['description']) ? $_POST['description'] : null;
 
 // Check if user is the owner of the item
-$sql = "SELECT * FROM items WHERE id = $item_id AND user_id = $user_id";
-$result = $conn->query($sql);
-if ($result->num_rows > 0) {
-    echo "Sorry, you cannot review your own item.";
-    $conn->close();
-    exit();
+$sql = "SELECT user_id FROM items WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $item_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$item_owner_id = $row['user_id'];
+
+if ($item_owner_id == $user_id) {
+    die("Sorry, you cannot review your own item.");
 }
 
 // Check if user has already given 3 reviews today
 $today = date('Y-m-d');
-$sql = "SELECT * FROM reviews WHERE user_id = $user_id AND created_at >= '$today'";
-$result = $conn->query($sql);
-if ($result->num_rows >= 3) {
-    echo "Sorry, you have already given 3 reviews today.";
-    $conn->close();
-    exit();
+$sql = "SELECT COUNT(*) AS review_count FROM reviews WHERE user_id = ? AND created_at >= ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("is", $user_id, $today);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$review_count = $row['review_count'];
+
+if ($review_count >= 3) {
+    die("Sorry, you have already given 3 reviews today.");
 }
 
-// Get review data from POST data
-$rating = $_POST['rating'];
-$description = $_POST['description'];
+// Check if user has already reviewed the item
+$sql = "SELECT COUNT(*) AS review_count FROM reviews WHERE user_id = ? AND item_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $user_id, $item_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$review_count = $row['review_count'];
 
-// Insert review into database
-$sql = "INSERT INTO reviews (item_id, user_id, rating, description) VALUES ($item_id, $user_id, '$rating', '$description')";
-if ($conn->query($sql) === TRUE) {
-    echo "Review submitted successfully.";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+if ($review_count > 0) {
+    die("Sorry, you have already reviewed this item.");
 }
 
-$conn->close();
+// Retrieve user_id from users table
+$sql = "SELECT user_id FROM users WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    die("Error: User not found.");
+}
+
+// Insert review data into database
+$created_at = date('Y-m-d H:i:s');
+$sql = "INSERT INTO reviews (item_id, user_id, rating, description, created_at) VALUES (?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("iiiss", $item_id, $user_id, $rating, $description, $created_at);
+if ($stmt->execute() === FALSE) {
+    die("Error inserting review: " . $conn->error);
+}
+
+echo "Review added successfully.";
 ?>
+

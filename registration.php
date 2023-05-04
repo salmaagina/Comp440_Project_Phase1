@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,31 +39,36 @@
                     }
 
                     require_once "database.php";
-                    $sql = "SELECT * FROM users WHERE email = '$email'";
-                    $result = mysqli_query($conn, $sql);
-                    $rowCount = mysqli_num_rows($result);
-                    if ($rowCount>0) { //if greater than 0 then provided email already exists!
-                     array_push($errors,"Email already exists!");
+                    $sql = "SELECT * FROM users WHERE email = ?";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (mysqli_stmt_prepare($stmt, $sql)) {
+                        mysqli_stmt_bind_param($stmt, "s", $email);
+                        mysqli_stmt_execute($stmt);
+                        mysqli_stmt_store_result($stmt);
+                        $rowCount = mysqli_stmt_num_rows($stmt);
+                        if ($rowCount > 0) {
+                            array_push($errors,"Email already exists!");
+                        }
+                    } else {
+                        die("Connection failed");
                     }
+        
                     if (count($errors)>0) {
-                     foreach ($errors as  $error) {
-                         echo "<div class='alert alert-danger'>$error</div>"; //bootstrap alert in red
-                     }
-
-                    } else{
-                     
-                     $sql = "INSERT INTO users (username, fname, lname, email, password) VALUES ( ?, ?, ?, ?, ?)"; //users is name of the table. ? is used for insertion
-                     $stmt = mysqli_stmt_init($conn); //will initialize the statement and return object suitable for mysqli_stmt_prepare().
-                     $prepareStmt = mysqli_stmt_prepare($stmt,$sql); 
-                     if ($prepareStmt) { //if preparestmt is true then start adding (username, fname etc) in the sql
-                         mysqli_stmt_bind_param($stmt,"sssss",$username, $fname, $lname, $email, $passwordHash); // s is a shortcut for string 
-                         mysqli_stmt_execute($stmt);
-                         echo "<div class='alert alert-success'>You are registered successfully.</div>"; //bootsrap alert in green
-                     } else{
-                         die("Connection failed");
-                     }
-                    }                        
-                 }
+                        foreach ($errors as $error) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                    } else {
+                        $sql = "INSERT INTO users (user_id,username, fname, lname, email, password) VALUES (?, ?, ?, ?, ?, ?)";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (mysqli_stmt_prepare($stmt, $sql)) {
+                            mysqli_stmt_bind_param($stmt, "ssssss", $user_id,$username, $fname, $lname, $email, $passwordHash);
+                            mysqli_stmt_execute($stmt);
+                            echo "<div class='alert alert-success'>You are registered successfully.</div>";
+                        } else {
+                            die("Connection failed");
+                        }
+                    }
+                }
         ?>
         <form action="registration.php" method="post">
             <div class="form-group">

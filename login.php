@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Check if user is already logged in
+if (isset($_SESSION['user_id'])) {
+    header("Location: index.php");
+    die();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,24 +21,32 @@
 <body>
     <div class="container">
         <?php
-        if (isset($_POST["login"])) {
-           $email = $_POST["email"];
-           $password = $_POST["password"];
-            require_once "database.php"; //connect first to the DB
-            $sql = "SELECT * FROM users WHERE email = '$email'";
-            $result = mysqli_query($conn, $sql);
-            $user = mysqli_fetch_array($result, MYSQLI_ASSOC); //fetches the result row as an associative array
-            if ($user) { //if email or password doesn't exist in DB
-                if (password_verify($password, $user["password"])) { //to decript password since password is already incripted
-                    header("Location: index.php"); //redirect to the main page
-                    die();
-                }else{
-                    echo "<div class='alert alert-danger'>Password does not match</div>";
-                }
-            }else{
-                echo "<div class='alert alert-danger'>Email does not match</div>";
-            }
+        error_reporting(E_ALL);
+        ini_set('display_errors', '1');
+        
+if (isset($_POST["login"])) {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    require_once "database.php"; //connect first to the DB
+    $sql = "SELECT user_id, password FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    if ($user) { //if email or password doesn't exist in DB
+        if (password_verify($password, $user["password"])) { //to decrypt password since password is already encrypted
+            $_SESSION['user_id'] = $user['user_id']; //set the session variable
+            header("Location: index.php"); //redirect to the main page
+            die();
+        } else {
+            echo "<div class='alert alert-danger'>Password does not match</div>";
         }
+    } else {
+        echo "<div class='alert alert-danger'>Email does not match</div>";
+    }
+}
+
         ?>
       <form action="login.php" method="post">
         <div class="form-group">
