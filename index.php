@@ -17,14 +17,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-
-// $_SESSION['user_id'] = $user_id;
-// if (isset($_SESSION['user_id'])) {
-//     echo "User ID: " . $_SESSION['user_id'];
-// } else {
-//     die("You need to log in to view this page.");
-// }
 ?>
 <body>
     <div class="container">
