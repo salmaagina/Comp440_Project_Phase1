@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-// Check if user is already logged in
+ //Check if user is already logged in
 if (isset($_SESSION['user_id'])) {
-    header("Location: index.php");
-    die();
+   header("Location: index.php");
+   die();
 }
 
 ?>

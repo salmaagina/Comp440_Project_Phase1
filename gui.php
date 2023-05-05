@@ -5,6 +5,7 @@ $username = "root";
 $password = "";
 $dbname = "phase1";
 
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 if (!$conn) {
@@ -29,6 +30,7 @@ if (!$conn) {
         <!-- Make the most expensive items show -->
         <form action="" method="get">
             <button type="submit" name="action" value="most_expensive_items" class="btn btn-primary">Most Expensive Items in Each Category</button>
+            <button type="submit" name="action" value="user_who_posted" class="btn btn-primary">Users Who Have Posted</button>
         </form>
         <?php
 // Set the session variable to 0 if it doesn't exist
@@ -58,6 +60,29 @@ if (isset($_GET['action']) && $_GET['action'] == 'most_expensive_items') {
         echo "</table>";
     }
 }
+
+// Check if the "Users who have posted" button is pressed
+if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted') {
+if($result = $conn->query("SELECT * FROM users")) {
+                //Increment the button click count
+                $_SESSION['button_click_count']++;
+            
+    if($count = $result->num_rows) {
+        echo "<table>";
+        echo "<tr><th>UserId</th><th>Username</th>";
+        while($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["user_id"] . "</td>";
+            echo "<td>" . $row["username"] . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+
+        }
+    }
+}
+
+
 
         ?>
         <a href="index.php" class="btn btn-warning">return</a>
