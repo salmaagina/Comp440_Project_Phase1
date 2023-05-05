@@ -46,6 +46,7 @@ error_reporting(E_ALL);
             <input type="text" id="category" name="category">
             <input type="submit" value="Search">
         </form>
+        <a href="gui.php" class="btn btn-warning">Enter GUI</a>
     </div>
 </body>
 </html>

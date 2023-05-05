@@ -20,7 +20,7 @@ session_start();
             $item_id = isset($_GET['id']) ? $_GET['id'] : null;
         ?>
         <form method="POST" action="submit_review.php">
-          <input type="hidden" name="id" value="<?php echo $item_id ?>">
+            <input type="hidden" name="id" value="<?php echo $item_id ?>">
             <label for="rating">Rating:</label>
             <select name="rating" id="rating">
                 <option value="Excellent">Excellent</option>

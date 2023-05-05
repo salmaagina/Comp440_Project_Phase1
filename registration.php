@@ -26,16 +26,16 @@ session_start();
                     $errors = array();
                     
                     if (empty($username) OR empty ($fname) OR empty ($lname) OR empty($email) OR empty($password) OR empty($passwordConfirm)) {
-                     array_push($errors,"All fields are required");
+                        array_push($errors,"All fields are required");
                     }
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                     array_push($errors, "Email is not valid");
+                        array_push($errors, "Email is not valid");
                     }
                     if (strlen($password)<8) {
-                     array_push($errors,"Password must be at least 8 charactes long");
+                        array_push($errors,"Password must be at least 8 charactes long");
                     }
                     if ($password!==$passwordConfirm) {
-                     array_push($errors,"Password does not match");
+                        array_push($errors,"Password does not match");
                     }
 
                     require_once "database.php";
@@ -95,7 +95,7 @@ session_start();
         </form>
         <div>
         <div><p>Already Registered <a href="login.php">Login Here</a></p></div>
-      </div>
+        </div>
     </div>
 </body>
 </html>

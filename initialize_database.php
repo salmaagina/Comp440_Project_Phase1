@@ -56,10 +56,10 @@ if ($conn->query($sql2) === TRUE) {
 // Define SQL statements to insert data into the tables
 $sql5 = "INSERT INTO products (name, description, price)
 		VALUES ('Product 1', 'This is product 1', 10),
-		       ('Product 2', 'This is product 2', 20),
-		       ('Product 3', 'This is product 3', 30),
-		       ('Product 4', 'This is product 4', 40),
-		       ('Product 5', 'This is product 5', 50)";
+		('Product 2', 'This is product 2', 20),
+		'Product 3', 'This is product 3', 30),
+		('Product 4', 'This is product 4', 40),
+		('Product 5', 'This is product 5', 50)";
 
 // Execute SQL statements to insert data into the tables
 if ($conn->query($sql5) === TRUE) {
