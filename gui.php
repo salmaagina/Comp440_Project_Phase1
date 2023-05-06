@@ -81,6 +81,26 @@ if($result = $conn->query("SELECT * FROM users")) {
         }
     }
 }
+// Check if the "Users who have posted" button is pressed
+if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted') {
+    if($result = $conn->query("SELECT * FROM items")) {
+                    //Increment the button click count
+                    $_SESSION['button_click_count']++;
+
+                    if($count = $result->num_rows) {
+                        echo "<table>";
+                        echo "<tr><th>Id</th><th>Items</th>";
+                        while($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row["id"] . "</td>";
+                            echo "<td>" . $row["title"] . "</td>";
+                            echo "</tr>";
+                        }
+                        echo "</table>";
+                
+                        }
+                    }
+                }
 
 
 
