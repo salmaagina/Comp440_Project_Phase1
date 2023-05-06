@@ -31,6 +31,8 @@ if (!$conn) {
         <form action="" method="get">
             <button type="submit" name="action" value="most_expensive_items" class="btn btn-primary">Most Expensive Items in Each Category</button>
             <button type="submit" name="action" value="user_who_posted" class="btn btn-primary">Users Who Have Posted</button>
+            <button type="submit" name="action" value="user_who_posted_excellent" class="btn btn-primary">Users who never posted any "excellent" items</button>
+            <button type="submit" name="action" value="user_who_posted_poor" class="btn btn-primary">Users who never posted a "poor" review.</button>
         </form>
         <?php
 // Set the session variable to 0 if it doesn't exist
@@ -101,8 +103,47 @@ if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted') {
                         }
                     }
                 }
+// Check if the "Users who have posted excellent item" button is pressed
+if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted_excellent') {
+    if($result = $conn->query("SELECT * FROM reviews")) {
+                    //Increment the button click count
+                    $_SESSION['button_click_count']++;
 
+                    if($count = $result->num_rows) {
+                        echo "<table>";
+                        echo "<tr><th>Id</th><th>Rating</th>";
+                        while($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row["id"] . "</td>";
+                            echo "<td>" . $row["rating"] . "</td>";
+                            echo "</tr>";
+                        }
+                        echo "</table>";
+                
+                        }
+                    }
+                }
 
+// Check if the "Users who have posted poor item" button is pressed
+if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted_poor') {
+    if($result = $conn->query("SELECT * FROM reviews")) {
+                    //Increment the button click count
+                    $_SESSION['button_click_count']++;
+
+                    if($count = $result->num_rows) {
+                        echo "<table>";
+                        echo "<tr><th>Id</th><th>Rating</th>";
+                        while($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row["id"] . "</td>";
+                            echo "<td>" . $row["rating"] . "</td>";
+                            echo "</tr>";
+                        }
+                        echo "</table>";
+                
+                        }
+                    }
+                }
 
         ?>
         <a href="index.php" class="btn btn-warning">return</a>
