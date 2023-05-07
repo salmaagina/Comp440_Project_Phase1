@@ -32,7 +32,7 @@ $rating = isset($_POST['rating']) ? $_POST['rating'] : null;
 $description = isset($_POST['description']) ? $_POST['description'] : null;
 
 // Check if user is the owner of the item
-$sql = "SELECT user_id FROM items WHERE id = ?";
+$sql = "SELECT user_id FROM reviews WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $item_id);
 $stmt->execute();
@@ -52,12 +52,12 @@ $stmt->bind_param("is", $user_id, $today);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
-$review_count = $row['review_count'];
+$review_count_today = $row['review_count'];
 
-if ($review_count >= 3) {
+if ($review_count_today >= 3) {
     die("Sorry, you have already given 3 reviews today.");
 }
-
+unset($review_count);
 // Check if user has already reviewed the item
 $sql = "SELECT COUNT(*) AS review_count FROM reviews WHERE user_id = ? AND item_id = ?";
 $stmt = $conn->prepare($sql);
@@ -65,9 +65,9 @@ $stmt->bind_param("ii", $user_id, $item_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
-$review_count = $row['review_count'];
+$review_count_item = $row['review_count'];
 
-if ($review_count > 0) {
+if ($review_count_item > 0) {
     die("Sorry, you have already reviewed this item.");
 }
 
