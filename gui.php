@@ -25,15 +25,11 @@ if (!$conn) {
 </head>
 <body>
     <div class="container">
-        <h1>Select a button</h1>
+        <h1>GUI</h1>
         <br>
 
-        <!-- Make the most expensive items show -->
         <form action="" method="get">
             <button type="submit" name="action" value="most_expensive_items" class="btn btn-primary">Most Expensive Items in Each Category</button>
-            <button type="submit" name="action" value="user_who_posted" class="btn btn-primary">Users Who Have Posted</button>
-            <button type="submit" name="action" value="user_who_posted_excellent" class="btn btn-primary">Users who never posted any "excellent" items</button>
-            <button type="submit" name="action" value="user_who_posted_poor" class="btn btn-primary">Users who never posted a "poor" review.</button>
             <br><br>
             <div class="row">
               <div class="col">
@@ -45,57 +41,151 @@ if (!$conn) {
             </div>
             <br>
             <button type="submit" name="action" value="user_who_posted_same_day" class="btn btn-primary">Users Who Posted at least two items that are posted on the same day</button>
-        </form>
+            <br><br>
+            <input type="text" class="form-control" placeholder="Enter username of user X" name="user_x">
+            <br>
+            <button type="submit" name="action" value="user_x_items" class="btn btn-primary">Items posted by user X with excellent/good comments</button>
+            <br><br>
+            <button type="submit" name="action" value="user_who_posted_most" class="btn btn-primary">Users Who Posted the Most Number of Items Since 5/1/2020</button>
+            <form action="" method="get">
+    <div class="row">
+        <div class="col">
+            <label for="user_x">Select User X:</label>
+            <select class="form-control" id="user_x" name="user_x">
+                <?php
+                    // Get all the distinct usernames in the database
+                    $sql = "SELECT DISTINCT username FROM users";
+                    $result = $conn->query($sql);
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo "<option value='" . $row["username"] . "'>" . $row["username"] . "</option>";
+                        }
+                    }
+                ?>
+            </select>
+        </div>
+        <div class="col">
+            <label for="user_y">Select User Y:</label>
+            <select class="form-control" id="user_y" name="user_y">
+                <?php
+                    // Get all the distinct usernames in the database
+                    $sql = "SELECT DISTINCT username FROM users";
+                    $result = $conn->query($sql);
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo "<option value='" . $row["username"] . "'>" . $row["username"] . "</option>";
+                        }
+                    }
+                ?>
+            </select>
+        </div>
+    </div>
+    <br>
+    <button type="submit" name="action" value="favorited_by_both" class="btn btn-primary">Find Users Who are Favorited by Both X and Y</button>
+    <br><br>
+            <button type="submit" name="action" value="user_who_posted_excellent" class="btn btn-primary">Users who never posted any "excellent" items</button>
+            <br><br>
+            <button type="submit" name="action" value="user_who_posted_poor" class="btn btn-primary">Users who never posted a "poor" review.</button>
+            <br><br>
+</form>
         
-        <?php
-        // Set the session variable to 0 if it doesn't exist
-        if (!isset($_SESSION['button_click_count'])) {
-            $_SESSION['button_click_count'] = 0;
-        }
+<?php
+    // Set the session variable to 0 if it doesn't exist
+    if (!isset($_SESSION['button_click_count'])) {
+        $_SESSION['button_click_count'] = 0;
+    }
 
-        // Check if the "Most Expensive Items in Each Category" button is pressed
-        if (isset($_GET['action']) && $_GET['action'] == 'most_expensive_items') {
-            // Increment the button click count
-            $_SESSION['button_click_count']++;
-            // Get the most expensive item in each category
-            $sql = "SELECT * FROM items WHERE price IN (SELECT MAX(price) FROM items GROUP BY category)";
-            $result = $conn->query($sql);
-            if ($result->num_rows > 0 && $_SESSION['button_click_count'] % 2 == 1) {
-                // Output the results
-                echo "<table>";
-                echo "<tr><th>Title</th><th>Description</th><th>Price</th><th>Category</th></tr>";
-                while($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row["title"] . "</td>";
-                echo "<td>" . $row["description"] . "</td>";
-                echo "<td>" . $row["price"] . "</td>";
-                echo "<td>" . $row["category"] . "</td>";
-                echo "</tr>";
-                }
-                echo "</table>";
-                }
-                }
-                    // Check if the "Users who have posted" button is pressed
-    if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted') {
+    // Check if the "Most Expensive Items in Each Category" button is pressed
+    if (isset($_GET['action']) && $_GET['action'] == 'most_expensive_items') {
         // Increment the button click count
         $_SESSION['button_click_count']++;
-        // Get the users who have posted
-        $sql = "SELECT DISTINCT users.user_id, users.username FROM users JOIN items ON users.user_id = items.user_id";
+        // Get the most expensive item in each category
+        $sql = "SELECT * FROM items WHERE price IN (SELECT MAX(price) FROM items GROUP BY category)";
         $result = $conn->query($sql);
         if ($result->num_rows > 0 && $_SESSION['button_click_count'] % 2 == 1) {
             // Output the results
             echo "<table>";
-            echo "<tr><th>User ID</th><th>Username</th></tr>";
+            echo "<tr><th>Title</th><th>Description</th><th>Price</th><th>Category</th></tr>";
             while($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row["user_id"] . "</td>";
-                echo "<td>" . $row["username"] . "</td>";
-                echo "</tr>";
+            echo "<tr>";
+            echo "<td>" . $row["title"] . "</td>";
+            echo "<td>" . $row["description"] . "</td>";
+            echo "<td>" . $row["price"] . "</td>";
+            echo "<td>" . $row["category"] . "</td>";
+            echo "</tr>";
             }
             echo "</table>";
         }
     }
+        // Check if the "Items posted by user X with excellent/good comments" button is pressed
+        if (isset($_GET['action']) && $_GET['action'] == 'user_x_items') {
+        // Get the input username
+        $user_x = $_GET['user_x'];
 
+        // Get the items posted by user X with only "Excellent" or "Good" comments
+        $sql = "SELECT items.*
+            FROM items
+            JOIN reviews ON items.id = reviews.item_id
+            WHERE items.user_id = (SELECT user_id FROM users WHERE username = '$user_x')
+            AND reviews.rating IN ('Excellent', 'Good')
+            AND NOT EXISTS (
+                SELECT 1 FROM reviews r2
+                WHERE r2.item_id = items.id
+                AND r2.rating NOT IN ('Excellent', 'Good')
+            )";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // Output the results
+        echo "<table>";
+        echo "<tr><th>Title</th><th>Description</th><th>Price</th><th>Category</th></tr>";
+        while($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["title"] . "</td>";
+            echo "<td>" . $row["description"] . "</td>";
+            echo "<td>" . $row["price"] . "</td>";
+            echo "<td>" . $row["category"] . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+}
+
+// Check if the "Users who posted the most number of items" button is pressed
+if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted_most') {
+    // Increment the button click count
+    $_SESSION['button_click_count']++;
+
+    // Get the users who have posted the most number of items since 5/1/2020 (inclusive)
+    $sql = "SELECT users.user_id, users.username, COUNT(items.id) as num_items
+            FROM users 
+            JOIN items ON users.user_id = items.user_id 
+            WHERE items.created_at >= '2020-05-01'
+            GROUP BY users.user_id, users.username
+            HAVING COUNT(items.id) = (
+                SELECT COUNT(items.id)
+                FROM items
+                WHERE items.created_at >= '2020-05-01'
+                GROUP BY items.user_id
+                ORDER BY COUNT(items.id) DESC
+                LIMIT 1
+            )";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0 && $_SESSION['button_click_count'] % 2 == 1) {
+        // Output the results
+        echo "<table>";
+        echo "<tr><th>User ID</th><th>Username</th><th>Number of Items</th></tr>";
+        while($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["user_id"] . "</td>";
+            echo "<td>" . $row["username"] . "</td>";
+            echo "<td>" . $row["num_items"] . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+}
 // Check if the "Users who have never posted an excellent item" button is pressed
 if (isset($_GET['action']) && $_GET['action'] == 'user_who_posted_excellent') {
     // Increment the button click count
@@ -173,6 +263,38 @@ if ($result->num_rows > 0) {
     echo "</table>";
 }
 }
+
+// Check if the "Find Users Who are Favorited by Both X and Y" button is pressed
+if (isset($_GET['action']) && $_GET['action'] == 'favorited_by_both') {
+    // Get the input usernames
+    $user_x = $_GET['user_x'];
+    $user_y = $_GET['user_y'];
+
+    // Get the users who are favorited by both X and Y
+    $sql = "SELECT DISTINCT u.user_id, u.username
+            FROM users u
+            JOIN favorites f1 ON u.user_id = f1.favorite_user_id
+            JOIN favorites f2 ON u.user_id = f2.favorite_user_id
+            JOIN users x ON f1.user_id = x.user_id
+            JOIN users y ON f2.user_id = y.user_id
+            WHERE x.username = '$user_x' AND y.username = '$user_y'";
+    $result = $conn->query($sql);
+
+    // Output the results
+    if ($result->num_rows > 0) {
+        echo "<table>";
+        echo "<tr><th>User ID</th><th>Username</th></tr>";
+        while($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["user_id"] . "</td>";
+            echo "<td>" . $row["username"] . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+}
+
+
     ?>
     <a href="index.php" class="btn btn-secondary">Return to Index</a>
 </div>
