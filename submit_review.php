@@ -85,7 +85,7 @@ if ($result->num_rows === 0) {
 $created_at = date('Y-m-d H:i:s');
 $sql = "INSERT INTO reviews (item_id, user_id, rating, description, created_at) VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iisss", $item_id, $user_id, $rating, $description, $created_at);
+$stmt->bind_param("iiiss", $item_id, $user_id, $rating, $description, $created_at);
 if ($stmt->execute() === FALSE) {
     die("Error inserting review: " . $conn->error);
 }
