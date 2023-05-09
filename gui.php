@@ -50,8 +50,8 @@ if (!$conn) {
             <form action="" method="get">
     <div class="row">
         <div class="col">
-            <label for="fav_user_x">Select User X:</label>
-            <select class="form-control" id="fav_user_x" name="fav_user_x">
+            <label for="fav_userX">Select User X:</label>
+            <select class="form-control" id="fav_userX" name="fav_userX">
                 <?php
                     // Get all the distinct usernames in the database
                     $sql = "SELECT DISTINCT username FROM users";
@@ -65,8 +65,8 @@ if (!$conn) {
             </select>
         </div>
         <div class="col">
-            <label for="fav_user_y">Select User Y:</label>
-            <select class="form-control" id="fav_user_y" name="fav_user_y">
+            <label for="fav_userY">Select User Y:</label>
+            <select class="form-control" id="fav_userY" name="fav_userY">
                 <?php
                     // Get all the distinct usernames in the database
                     $sql = "SELECT DISTINCT username FROM users";
