@@ -50,8 +50,8 @@ if (!$conn) {
             <form action="" method="get">
     <div class="row">
         <div class="col">
-            <label for="user_x">Select User X:</label>
-            <select class="form-control" id="user_x" name="user_x">
+            <label for="fav_user_x">Select User X:</label>
+            <select class="form-control" id="fav_user_x" name="fav_user_x">
                 <?php
                     // Get all the distinct usernames in the database
                     $sql = "SELECT DISTINCT username FROM users";
@@ -65,8 +65,8 @@ if (!$conn) {
             </select>
         </div>
         <div class="col">
-            <label for="user_y">Select User Y:</label>
-            <select class="form-control" id="user_y" name="user_y">
+            <label for="fav_user_y">Select User Y:</label>
+            <select class="form-control" id="fav_user_y" name="fav_user_y">
                 <?php
                     // Get all the distinct usernames in the database
                     $sql = "SELECT DISTINCT username FROM users";
@@ -272,32 +272,32 @@ if ($result->num_rows > 0) {
 // Check if the "Find Users Who are Favorited by Both X and Y" button is pressed
 if (isset($_GET['action']) && $_GET['action'] == 'favorited_by_both') {
     // Get the input usernames
-    $user_x = $_GET['user_x'];
-    $user_y = $_GET['user_y'];
+    $user_x = $_GET['fav_userX'];
+    $user_y = $_GET['fav_userY'];
 
     // Get the users who are favorited by both X and Y
-    $sql = "SELECT DISTINCT u.user_id, u.username
-            FROM users u
-            JOIN favorites f1 ON u.user_id = f1.favorite_user_id
-            JOIN favorites f2 ON u.user_id = f2.favorite_user_id
-            JOIN users x ON f1.user_id = x.user_id
-            JOIN users y ON f2.user_id = y.user_id
-            WHERE x.username = '$user_x' AND y.username = '$user_y'";
+    $sql = "SELECT t1.Users
+    FROM favorites t1
+    JOIN favorites t2
+    ON t1.Users = t2.Users AND t1.Favorited_by = 'billy0' AND t2.Favorited_by = 'john1'
+    AND t1.Users = t2.Users";
+    
     $result = $conn->query($sql);
 
     // Output the results
     if ($result->num_rows > 0) {
         echo "<table>";
-        echo "<tr><th>User ID</th><th>Username</th></tr>";
+        echo "<tr><th>User</th></tr>";
         while($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row["user_id"] . "</td>";
-            echo "<td>" . $row["username"] . "</td>";
+            echo "<td>" . $row["Users"] . "</td>";
             echo "</tr>";
         }
         echo "</table>";
     }
 }
+
+
 
 // Requirement 8: Users who posted some reviews, but each of them is "poor"
 if (isset($_GET['action']) && $_GET['action'] == 'users_only_poor_reviews') {
