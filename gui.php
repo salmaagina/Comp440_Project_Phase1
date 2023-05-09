@@ -279,7 +279,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'favorited_by_both') {
     $sql = "SELECT t1.Users
     FROM favorites t1
     JOIN favorites t2
-    ON t1.Users = t2.Users AND t1.Favorited_by = 'billy0' AND t2.Favorited_by = 'john1'
+    ON t1.Users = t2.Users AND t1.Favorited_by = '$user_x' AND t2.Favorited_by = '$user_y'
     AND t1.Users = t2.Users";
     
     $result = $conn->query($sql);
